@@ -1,10 +1,15 @@
-export function range(n: number) {
-  let numbers = [];
-  for (let i = 0; i < n; i++) {
-    numbers.push(i);
-  }
-
-  return numbers;
-}
-
-export function makeData() {}
+export const fakeRoutes = () => {
+  return [
+    //"AB1",
+    //"BA2",
+    "AC4",
+    "AD10",
+    //"BE3",
+    "CD4",
+    //"CF2",
+    "DE1",
+    "EB3",
+    "EA2"
+    //"FD1"
+  ];
+};

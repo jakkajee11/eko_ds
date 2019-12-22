@@ -1,3 +1,3 @@
 export type HashRoutes = {
-  [key: string]: string[];
+  [key: string]: { [subkey: string]: number };
 };
