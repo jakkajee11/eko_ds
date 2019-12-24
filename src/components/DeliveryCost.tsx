@@ -2,28 +2,22 @@ import React, { useState } from "react";
 import _ from "lodash";
 import AvailableRoute from "./AvailableRoute";
 import { fakeRoutes } from "../data/makeData";
-import { HashRoutes } from "../data/types";
-import routeCalculator from "../utils/routeCalculator";
+import { Matrix } from "../data/types";
+import graphCalculator from "../utils/graphCalculator";
+import { renderRoute } from "../utils/routeRenderer";
 
 const routes = fakeRoutes();
 
 const renderCost = (input: string, cost: number) => {
   if (!input) return "";
-  if (cost) return cost;
+  if (cost !== Infinity) return cost;
 
   return "No Such Route";
 };
 
-const renderRoute = (routes: string) => {
-  return _.join(
-    _.toArray(routes).map(r => r),
-    "->"
-  );
-};
-
 const DeliveryCost: React.FC = () => {
-  const [hashRoutes, setHashRoutes] = useState<HashRoutes>(
-    routeCalculator.buildRoutesMatrix(routes)
+  const [hashRoutes, setHashRoutes] = useState<Matrix>(
+    graphCalculator.buildMatrix(routes)
   );
   const [inputRoutes, setInputRoutes] = useState<string>("");
   const [cost, setCost] = useState();
@@ -38,7 +32,7 @@ const DeliveryCost: React.FC = () => {
         onChange={e => {
           setInputRoutes(e.target.value.toUpperCase());
           setCost(
-            routeCalculator.calculateCost(
+            graphCalculator.calculateCost(
               hashRoutes,
               e.target.value.toUpperCase()
             )
@@ -46,14 +40,7 @@ const DeliveryCost: React.FC = () => {
         }}
         style={{ textTransform: "capitalize" }}
       />
-      {/* <button
-        type="submit"
-        onClick={() =>
-          setCost(routeCalculator.calculateCost(hashRoutes, inputRoutes))
-        }
-      >
-        Submit
-      </button> */}
+
       <hr />
       <div>
         <div style={{ width: "45%", float: "left", padding: "10px" }}>

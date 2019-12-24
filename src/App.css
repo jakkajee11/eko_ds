@@ -36,6 +36,18 @@ button {
   font-size: medium;
 }
 
+.nav {
+  padding: 5;
+}
+
+.nav-item {
+  margin-left: 10px;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
