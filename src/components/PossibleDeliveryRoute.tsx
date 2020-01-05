@@ -53,7 +53,7 @@ const PossibleDeliveryRoute: React.FC = () => {
       <hr />
       <div>
         <div style={{ width: "45%", float: "left", padding: "10px" }}>
-          <AvailableRoute routes={routes} />
+          <AvailableRoute />
         </div>
         <div>
           {inputRoutes && cost && (

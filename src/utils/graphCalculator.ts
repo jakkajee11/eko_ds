@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { Matrix } from "../data/types";
+import { PriorityQueue } from "../models/PriorityQueue";
 
 const graphCalculator = {
   buildMatrix(routes: string[]) {
@@ -75,12 +76,12 @@ const graphCalculator = {
   },
   minDistance(
     distances: { [key: string]: number },
-    visitedRoutes: { [key: string]: boolean }
+    visitedRoutes: { [key: string]: number }
   ): string {
     let min = Infinity;
     let minNode = "";
     _.forIn(distances, (weight: number, key: string) => {
-      if (!visitedRoutes[key] && weight <= min) {
+      if (!visitedRoutes[key] && visitedRoutes[key] === 0 && weight <= min) {
         min = weight;
         minNode = key;
       }
@@ -89,11 +90,12 @@ const graphCalculator = {
   },
   calculateShotestPath(routes: Matrix, start: string, end: string): number {
     let distances: { [key: string]: number } = {};
-    let visitedNodes: { [key: string]: boolean } = {};
+    let visitedNodes: { [key: string]: number } = {};
+    //let visitedNodes: { [key: string]: boolean } = {};
     // initialize data;
     _.keys(routes).map(key => {
       distances[key] = Infinity;
-      visitedNodes[key] = false;
+      visitedNodes[key] = 0;
     });
 
     // start node distance always be 0
@@ -103,15 +105,13 @@ const graphCalculator = {
       // find start node (minimum distance)
       const startNode = this.minDistance(distances, visitedNodes);
       // mark startNode as visited
-      visitedNodes[startNode] = true;
+      visitedNodes[startNode] += 1;
 
       // adjacent
       // loop through all adjacent nodes
       _.forIn(routes[startNode], (weight: number, nextNode: string) => {
         if (
-          !visitedNodes[nextNode] &&
-          nextNode !== startNode &&
-          weight !== 0 &&
+          visitedNodes[nextNode] <= 2 &&
           weight !== Infinity &&
           distances[startNode] !== Infinity &&
           distances[startNode] + weight < distances[nextNode]
@@ -119,6 +119,68 @@ const graphCalculator = {
           distances[nextNode] = distances[startNode] + weight;
       });
     });
+
+    //console.log(["visitedNodes", visitedNodes, distances]);
+
+    return distances[end];
+  },
+  // minDistance2(
+  //   distances: Matrix,
+  //   visitedRoutes: { [key: string]: number }
+  // ): string {
+  //   let min = Infinity;
+  //   let minNode = "";
+  //   _.forIn(distances, (weight: number, key: string) => {
+  //     if (!visitedRoutes[key] && visitedRoutes[key] === 0 && weight <= min) {
+  //       min = weight;
+  //       minNode = key;
+  //     }
+  //   });
+  //   return minNode;
+  // },
+  calculateShotestPath2(routes: Matrix, start: string, end: string): number {
+    let distances: { [key: string]: number } = {};
+    let visitedNodes: { [key: string]: number } = {};
+    //let visitedNodes: { [key: string]: boolean } = {};
+    // initialize data;
+    _.keys(routes).map(key => {
+      distances[key] = Infinity;
+      visitedNodes[key] = 0;
+    });
+
+    // start node distance always be 0
+    distances[start] = 0;
+
+    _.keys(routes).map(x => {
+      // find start node (minimum distance)
+      const startNode = this.minDistance(distances, visitedNodes);
+      // mark startNode as visited
+      visitedNodes[startNode] += 1;
+
+      // adjacent
+      // loop through all adjacent nodes
+      _.forIn(routes[startNode], (weight: number, nextNode: string) => {
+        if (
+          visitedNodes[nextNode] <= 2 &&
+          weight !== Infinity &&
+          distances[startNode] !== Infinity &&
+          distances[startNode] + weight < distances[nextNode]
+        )
+          distances[nextNode] = distances[startNode] + weight;
+      });
+    });
+
+    //console.log(["visitedNodes", visitedNodes, distances]);
+
+    return distances[end];
+  },
+  calculateShotestPath3(routes: Matrix, start: string, end: string): number {
+    if (start !== end) return this.calculateShotestPath(routes, start, end);
+
+    let distances: { [key: string]: number } = {};
+    let visitedNodes: { [key: string]: number } = {};
+
+    // initialize data;
 
     return distances[end];
   }

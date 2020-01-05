@@ -1,16 +1,30 @@
 import React from "react";
-import { Router } from "react-router-dom";
+
 import logo from "./logo.svg";
 import "./App.css";
+import { theme, CSSReset, Box } from "@chakra-ui/core";
+import { ThemeProvider } from "@chakra-ui/core";
 
-import routes from "./routes/routes";
-import history from "./routes/history";
+const customTheme = {
+  ...theme,
+  colors: {
+    ...theme.colors,
+    brand: {
+      900: "#1a365d",
+      800: "#153e75",
+      700: "#2a69ac"
+    }
+  }
+};
 
-const App: React.FC = () => {
+const App: React.FC = ({ children }) => {
   return (
-    <div className="App">
-      <Router history={history}>{routes}</Router>
-    </div>
+    <Box padding={10} margin={5}>
+      <ThemeProvider theme={customTheme}>
+        <CSSReset />
+        {children}
+      </ThemeProvider>
+    </Box>
   );
 };
 

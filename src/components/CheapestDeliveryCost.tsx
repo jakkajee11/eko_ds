@@ -1,47 +1,67 @@
-import React, { useState } from "react";
-import { Matrix } from "../data/types";
+import React, { useState, useEffect } from "react";
+import { Matrix, ShortestPath } from "../data/types";
 import graphCalculator from "../utils/graphCalculator";
 import { fakeRoutes } from "../data/makeData";
 
 import AvailableRoute from "./AvailableRoute";
-import { renderRoute } from "../utils/routeRenderer";
-
-const routes = fakeRoutes();
+import { renderRoute, renderArray } from "../utils/routeRenderer";
+import { Flex, Text, Stack, Input, Divider, Box } from "@chakra-ui/core";
+import { Graph } from "../models/Graph";
+import graphBuilder from "../utils/graphBuilder";
 
 const CheapestDeliveryRoute: React.FC = () => {
-  const [hashRoutes, setHashRoutes] = useState<Matrix>(
-    graphCalculator.buildMatrix(routes)
-  );
+  const [graph] = useState(new Graph());
   const [inputRoutes, setInputRoutes] = useState<string>("");
-  const [cheapestCost, setCheapestCost] = useState();
+  const [cheapestCost, setCheapestCost] = useState<ShortestPath>();
 
   const handleInputChange = (input: string) => {
     if (input.length === 2) {
       setCheapestCost(
-        graphCalculator.calculateShotestPath(hashRoutes, input[0], input[1])
+        //graphCalculator.calculateShotestPath2(hashRoutes, input[0], input[1])
+        graph.findShortestPath(input[0], input[1])
       );
     }
 
     setInputRoutes(input);
   };
 
-  return (
-    <div>
-      <h4>Cheapest delivey cost calculation</h4>
-      <input
-        type="text"
-        placeholder="Input routes..."
-        value={inputRoutes}
-        minLength={2}
-        maxLength={2}
-        onChange={e => handleInputChange(e.target.value.toUpperCase())}
-        style={{ textTransform: "capitalize" }}
-      />
+  useEffect(() => {
+    graphBuilder.initGraph(graph);
+  }, []);
 
-      <hr />
-      <div>
+  return (
+    <Flex direction="column" marginTop={10} padding={5}>
+      <Text as="i" fontSize="lg">
+        Cheapest delivey cost calculation
+      </Text>
+      <Stack>
+        <Input
+          type="text"
+          placeholder="Input routes..."
+          value={inputRoutes}
+          minLength={2}
+          maxLength={2}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleInputChange(e.target.value.toUpperCase())
+          }
+          className="capitalize"
+        />
+
+        <Divider />
+        {inputRoutes.length >= 2 && (
+          <Stack direction="row">
+            <Box>Path: {renderArray(cheapestCost?.path || [])}</Box>
+            <Divider orientation="vertical" />
+            <Box>
+              <Text>Cost: {cheapestCost?.cost}</Text>
+            </Box>
+          </Stack>
+        )}
+
+        <AvailableRoute searchRoutes={cheapestCost?.path} />
+        {/* <div>
         <div style={{ width: "45%", float: "left", padding: "10px" }}>
-          <AvailableRoute routes={routes} />
+          <AvailableRoute />
         </div>
         <div style={{ width: "45%", float: "right", padding: "10px" }}>
           {inputRoutes.length === 2 && (
@@ -61,8 +81,9 @@ const CheapestDeliveryRoute: React.FC = () => {
             </table>
           )}
         </div>
-      </div>
-    </div>
+      </div> */}
+      </Stack>
+    </Flex>
   );
 };
 

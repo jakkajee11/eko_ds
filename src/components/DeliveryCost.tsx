@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import _ from "lodash";
 import AvailableRoute from "./AvailableRoute";
 import { fakeRoutes } from "../data/makeData";
 import { Matrix } from "../data/types";
 import graphCalculator from "../utils/graphCalculator";
+import { Graph } from "../models/Graph";
 import { renderRoute } from "../utils/routeRenderer";
+import graphBuilder from "../utils/graphBuilder";
+import D3Graph from "./D3Graph";
+import { Flex, Text, Stack, Input, Divider, Box } from "@chakra-ui/core";
 
 const routes = fakeRoutes();
 
@@ -16,56 +20,44 @@ const renderCost = (input: string, cost: number) => {
 };
 
 const DeliveryCost: React.FC = () => {
-  const [hashRoutes, setHashRoutes] = useState<Matrix>(
-    graphCalculator.buildMatrix(routes)
-  );
+  const [graph] = useState(new Graph());
   const [inputRoutes, setInputRoutes] = useState<string>("");
   const [cost, setCost] = useState();
 
-  return (
-    <div>
-      <h4>Delivery cost calculation</h4>
-      <input
-        type="text"
-        placeholder="Put your route here..."
-        value={inputRoutes}
-        onChange={e => {
-          setInputRoutes(e.target.value.toUpperCase());
-          setCost(
-            graphCalculator.calculateCost(
-              hashRoutes,
-              e.target.value.toUpperCase()
-            )
-          );
-        }}
-        style={{ textTransform: "capitalize" }}
-      />
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputRoutes(e.target.value.toUpperCase());
+    setCost(graph.calculateCost(e.target.value.toUpperCase()));
+  };
 
-      <hr />
-      <div>
-        <div style={{ width: "45%", float: "left", padding: "10px" }}>
-          <AvailableRoute routes={routes} />
-        </div>
-        <div>
-          {inputRoutes && (
-            <table>
-              <thead>
-                <tr>
-                  <th>From-To</th>
-                  <th>Cost</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{renderRoute(inputRoutes)}</td>
-                  <td>{renderCost(inputRoutes, cost)}</td>
-                </tr>
-              </tbody>
-            </table>
-          )}
-        </div>
-      </div>
-    </div>
+  useEffect(() => {
+    graphBuilder.initGraph(graph);
+  }, []);
+
+  return (
+    <Flex direction="column" marginTop={10} padding={5}>
+      <Text as="i" fontSize="lg">
+        Delivery cost calculation
+      </Text>
+      <Stack>
+        <Input
+          placeholder="Put your route here..."
+          value={inputRoutes}
+          onChange={handleInputChange}
+          className="capitalize"
+        />
+
+        <Divider />
+        {inputRoutes.length >= 2 && (
+          <Stack direction="row">
+            <Box>{renderRoute(inputRoutes)}</Box>
+            <Divider orientation="vertical" />
+            <Box>{renderCost(inputRoutes, cost)}</Box>
+          </Stack>
+        )}
+
+        <AvailableRoute searchRoutes={_.toArray(inputRoutes)} />
+      </Stack>
+    </Flex>
   );
 };
 

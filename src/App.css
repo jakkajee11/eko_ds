@@ -32,6 +32,11 @@ input {
   font-size: medium;
 }
 
+.error {
+  border-width: 1;
+  border-color: red;
+}
+
 button {
   font-size: medium;
 }
