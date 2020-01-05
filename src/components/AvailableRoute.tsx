@@ -1,8 +1,9 @@
 import React from "react";
 import graphBuilder from "../utils/graphBuilder";
 import D3Graph from "../components/D3Graph";
-import { Box, Text } from "@chakra-ui/core";
+import { Box, Text, Stack, Link, Divider, Button } from "@chakra-ui/core";
 import { renderGraphLinks } from "../utils/routeRenderer";
+import history from "../routes/history";
 
 interface AvailableRouteProps {
   searchRoutes?: string[];
@@ -36,13 +37,38 @@ const AvailableRoute: React.FC<AvailableRouteProps> = ({ searchRoutes }) => {
     });
   }
 
+  const loadExampleData = () => {
+    graphBuilder.initExampleGraph();
+    window.location.reload();
+  };
+
   return (
     <Box>
       <Text as="i" fontSize="lg">
         Available Routes
       </Text>
       <D3Graph data={data} />
-      <Box>{renderGraphLinks(data.links)}</Box>
+      {data && data.links.length > 0 && (
+        <Box>{renderGraphLinks(data.links)}</Box>
+      )}
+      {data && data.links.length === 0 && (
+        <Box>
+          <Stack>
+            <Text>No data available yet.</Text>
+            <Text>
+              Create your own data{" "}
+              <Link color="tomato" onClick={() => history.push("add")}>
+                here
+              </Link>
+            </Text>
+            <Divider />
+            <Text>
+              or use example data{" "}
+              <Button onClick={loadExampleData}>Load example data</Button>{" "}
+            </Text>
+          </Stack>
+        </Box>
+      )}
     </Box>
   );
 };
