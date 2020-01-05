@@ -133,8 +133,6 @@ export class Graph {
       if (startNode === endPath) stop = true;
     }
 
-    console.log(`Path is ${path} and time is ${costs[endNode]}`);
-
     const shortestPath: ShortestPath = {
       path,
       cost: costs[endNode]

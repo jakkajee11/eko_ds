@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Matrix } from "../data/types";
 import graphCalculator from "../utils/graphCalculator";
 import { fakeRoutes } from "../data/makeData";
 import AvailableRoute from "./AvailableRoute";
 import { renderRoute } from "../utils/routeRenderer";
+import { Flex, Text, Stack, Input, Button, Divider } from "@chakra-ui/core";
+import { Graph } from "../models/Graph";
+import graphBuilder from "../utils/graphBuilder";
 
 const routes = fakeRoutes();
 
@@ -11,6 +14,7 @@ const PossibleDeliveryRoute: React.FC = () => {
   const [hashRoutes, setHashRoutes] = useState<Matrix>(
     graphCalculator.buildMatrix(routes)
   );
+  const [graph] = useState(new Graph());
   const [inputRoutes, setInputRoutes] = useState<string>("");
   const [cost, setCost] = useState();
 
@@ -32,26 +36,39 @@ const PossibleDeliveryRoute: React.FC = () => {
           i
         );
       }
-
+    const w = graph.findPossibleWalks(inputRoutes[0], inputRoutes[1], max);
+    console.log(["w", w]);
     setCost(count);
   };
 
+  useEffect(() => {
+    graphBuilder.initGraph(graph);
+  }, []);
+
   return (
-    <div>
-      <h4>Possible delivey route calculation</h4>
-      <input
-        type="text"
-        placeholder="Input routes..."
-        value={inputRoutes}
-        onChange={e => handleInputChange(e.target.value.toUpperCase())}
-        className="capitalize"
-      />
-      <input type="number" ref={numberRef} defaultValue={0} min={0} />
-      <button type="submit" onClick={() => handleSumbit()}>
-        Submit
-      </button>
-      <hr />
-      <div>
+    <Flex direction="column" marginTop={10} padding={5}>
+      <Text as="i" fontSize="lg">
+        Possible delivey route calculation
+      </Text>
+      <Stack>
+        <Input
+          type="text"
+          placeholder="Input routes..."
+          value={inputRoutes}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleInputChange(e.target.value.toUpperCase())
+          }
+          className="capitalize"
+        />
+        <Input type="number" ref={numberRef} defaultValue={0} min={0} />
+        <Button type="submit" onClick={() => handleSumbit()}>
+          Submit
+        </Button>
+        <Divider />
+        <AvailableRoute />
+      </Stack>
+
+      {/* <div>
         <div style={{ width: "45%", float: "left", padding: "10px" }}>
           <AvailableRoute />
         </div>
@@ -73,8 +90,8 @@ const PossibleDeliveryRoute: React.FC = () => {
             </table>
           )}
         </div>
-      </div>
-    </div>
+      </div> */}
+    </Flex>
   );
 };
 
