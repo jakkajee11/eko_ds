@@ -11,25 +11,25 @@ import { Button, Input } from "@chakra-ui/core";
 //const graph = fakeGraphs();
 
 const theGraph = new Graph();
-theGraph.addNode("A");
-theGraph.addNode("B");
-theGraph.addNode("C");
-theGraph.addNode("D");
-theGraph.addNode("E");
-theGraph.addNode("F");
+// theGraph.addNode("A");
+// theGraph.addNode("B");
+// theGraph.addNode("C");
+// theGraph.addNode("D");
+// theGraph.addNode("E");
+// theGraph.addNode("F");
 
-theGraph.addEdge("A", "B", 1);
-theGraph.addEdge("E", "B", 3);
-theGraph.addEdge("B", "E", 3);
-theGraph.addEdge("E", "A", 2);
-theGraph.addEdge("A", "C", 4);
-theGraph.addEdge("A", "D", 10);
-theGraph.addEdge("C", "D", 4);
-theGraph.addEdge("C", "F", 2);
-theGraph.addEdge("F", "D", 1);
-theGraph.addEdge("D", "E", 1);
+// theGraph.addEdge("A", "B", 1);
+// theGraph.addEdge("E", "B", 3);
+// theGraph.addEdge("B", "E", 3);
+// theGraph.addEdge("E", "A", 2);
+// theGraph.addEdge("A", "C", 4);
+// theGraph.addEdge("A", "D", 10);
+// theGraph.addEdge("C", "D", 4);
+// theGraph.addEdge("C", "F", 2);
+// theGraph.addEdge("F", "D", 1);
+// theGraph.addEdge("D", "E", 1);
 
-console.log(["graph", theGraph]);
+// console.log(["graph", theGraph]);
 
 const TestGraph: React.FC = () => {
   //const [graph, setGraph] = useState<Graph>(fakeGraphs());
@@ -59,7 +59,7 @@ const TestGraph: React.FC = () => {
       inputRoutes[1],
       max
     );
-    console.log(["numWalks", numWalks]);
+    //console.log(["numWalks", numWalks]);
     setWalks(numWalks);
   };
 

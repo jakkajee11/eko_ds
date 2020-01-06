@@ -43,20 +43,15 @@ export class Graph {
 
   calculateWalks(start: string, end: string, k: number): number {
     if (k === 0 && start === end) return 1;
-    if (k === 1 && this.adjacencyLists[start][end] !== Infinity) return 1;
-    if (this.adjacencyLists[start][end] === undefined) return 0;
+    if (k === 1 && _.has(this.adjacencyLists, `${start}.${end}`)) return 1;
     if (k <= 0) return 0;
 
     let count = 0;
-    _.keys(this.nodes).forEach(currentNode => {
-      if (
-        this.adjacencyLists[start][currentNode] !== Infinity &&
-        start !== currentNode &&
-        end !== currentNode
-      ) {
-        count += this.calculateWalks(currentNode, end, k - 1);
-      }
-    });
+    if (_.has(this.adjacencyLists, start)) {
+      _.forIn(this.adjacencyLists[start], (weight, neigbor) => {
+        count += this.calculateWalks(neigbor, end, k - 1);
+      });
+    }
 
     return count;
   }
@@ -65,7 +60,6 @@ export class Graph {
     let count = 0;
     for (let i = k; i > 0; i--) {
       const w = this.calculateWalks(start, end, i);
-      console.log(["i", i, w]);
       count += w;
     }
 

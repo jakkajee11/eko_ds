@@ -4,7 +4,20 @@ import graphCalculator from "../utils/graphCalculator";
 import { fakeRoutes } from "../data/makeData";
 import AvailableRoute from "./AvailableRoute";
 import { renderRoute } from "../utils/routeRenderer";
-import { Flex, Text, Stack, Input, Button, Divider } from "@chakra-ui/core";
+import {
+  Flex,
+  Text,
+  Stack,
+  Input,
+  Button,
+  Divider,
+  Box,
+  Icon,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  InputLeftAddon
+} from "@chakra-ui/core";
 import { Graph } from "../models/Graph";
 import graphBuilder from "../utils/graphBuilder";
 
@@ -28,16 +41,8 @@ const PossibleDeliveryRoute: React.FC = () => {
     let count = 0;
     const max = numberRef.current ? parseInt(numberRef.current.value) : 0;
     if (max > 0)
-      for (let i = max; i > 0; i--) {
-        count += graphCalculator.calculateWalks(
-          hashRoutes,
-          inputRoutes[0],
-          inputRoutes[1],
-          i
-        );
-      }
-    const w = graph.findPossibleWalks(inputRoutes[0], inputRoutes[1], max);
-    console.log(["w", w]);
+      count += graph.findPossibleWalks(inputRoutes[0], inputRoutes[1], max);
+
     setCost(count);
   };
 
@@ -60,37 +65,32 @@ const PossibleDeliveryRoute: React.FC = () => {
           }
           className="capitalize"
         />
-        <Input type="number" ref={numberRef} defaultValue={0} min={0} />
-        <Button type="submit" onClick={() => handleSumbit()}>
-          Submit
+        <InputGroup>
+          <InputLeftAddon children="Maximum walk: " />
+          <Input type="number" ref={numberRef} defaultValue={1} min={1} />
+          <InputRightElement
+            children={<Icon name="up-down" color="gray.300" />}
+          />
+        </InputGroup>
+
+        <Button
+          type="submit"
+          variantColor="teal"
+          variant="solid"
+          onClick={() => handleSumbit()}
+        >
+          Find
         </Button>
         <Divider />
+        {inputRoutes.length >= 2 && (
+          <Stack direction="row">
+            <Box>Path: {renderRoute(inputRoutes)}</Box>
+            <Divider orientation="vertical" />
+            <Box>Cost: {cost}</Box>
+          </Stack>
+        )}
         <AvailableRoute />
       </Stack>
-
-      {/* <div>
-        <div style={{ width: "45%", float: "left", padding: "10px" }}>
-          <AvailableRoute />
-        </div>
-        <div>
-          {inputRoutes && cost && (
-            <table>
-              <thead>
-                <tr>
-                  <th>From-To</th>
-                  <th>Result</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{renderRoute(inputRoutes)}</td>
-                  <td>{cost}</td>
-                </tr>
-              </tbody>
-            </table>
-          )}
-        </div>
-      </div> */}
     </Flex>
   );
 };

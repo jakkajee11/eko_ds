@@ -65,7 +65,7 @@ const AddRoute: React.FC = () => {
       <Text as="i" fontSize="lg">
         Add new routes
       </Text>
-      <Stack direction="row" spacing={2}>
+      <Stack direction="column" spacing={2}>
         <Input
           placeholder="Add new route..."
           min={3}
